@@ -3,6 +3,7 @@ from src.core.config.config import (
     DBConfig,
     WebhookConfig,
     TelegramConfig,
+    AIConfig,
 )
 
 __all__ = (
@@ -10,4 +11,5 @@ __all__ = (
     "DBConfig",
     "WebhookConfig",
     "TelegramConfig",
+    "AIConfig",
 )

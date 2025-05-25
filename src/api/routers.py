@@ -23,3 +23,8 @@ async def bot_webhook(request: Request):
     )
     await TelegramConfig.dp.feed_update(update)
     return {"status": "ok"}
+
+
+@router.get("/health")
+async def health():
+    return {"status": "ok"}

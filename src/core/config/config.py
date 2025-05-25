@@ -2,7 +2,10 @@ import os
 
 from aiogram.fsm.storage.redis import RedisStorage
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher
+from aiogram import (
+    Bot,
+    Dispatcher,
+)
 from aiogram.client.default import DefaultBotProperties
 from redis.asyncio import Redis
 
@@ -29,9 +32,10 @@ class RedisConfig:
 class DBConfig:
     PATH: str = os.getenv("DB_PATH")
 
-    @property
-    def URL(self) -> str:
-        return f"sqlite:///{self.PATH}"
+    def URL(self, migrations: bool = False) -> str:
+        if migrations:
+            return f"sqlite:///{self.PATH}"
+        return f"sqlite+aiosqlite:///../{self.PATH}"
 
 
 class WebhookConfig:
@@ -44,3 +48,7 @@ class TelegramConfig:
     TOKEN = os.getenv("API_TOKEN")
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
     dp = Dispatcher(storage=RedisStorage(redis=RedisConfig().conn))
+
+
+class AIConfig:
+    DEEPSEEK_TOKEN: str = os.getenv("DEEPSEEK_TOKEN")
