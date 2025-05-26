@@ -1,8 +1,3 @@
-import asyncio
-import random
-from datetime import datetime
-
-from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import (
     Message,
@@ -13,7 +8,6 @@ from src.utils.load_lexicon import LoaderLexicon
 from src.keyboards.inline import InlineKeyboard
 from src.utils.uow import UOW
 from src.utils.ai_client import DeepseekClient
-from src.utils.auido_converter import AudioConverter
 
 
 class ProfileService:
@@ -66,7 +60,7 @@ class ProfileService:
                         "subscription",
                         "support",
                         "improvement",
-                        "back"
+                        "back",
                     ],
                     callback_datas=[
                         "my_condition",
@@ -76,7 +70,23 @@ class ProfileService:
                         "buy_subscription",
                         "support",
                         "improvement",
-                        "menu"
+                        "menu",
                     ],
+                ),
+            )
+
+    async def partner(self, callback: CallbackQuery) -> None:
+        async with self.uow:
+            statistics = await self.uow.users.get_count_partners_and_subscriptions(
+                callback.message.chat.id
+            )
+
+            await callback.message.edit_text(
+                text=self.texts["partner"].format(
+                    count_partners=statistics["count_partners"],
+                    count_subscriptions=statistics["count_subscriptions"],
+                ),
+                reply_markup=InlineKeyboard(self.language).partner(
+                    callback.message.chat.id
                 ),
             )

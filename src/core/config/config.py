@@ -46,6 +46,7 @@ class WebhookConfig:
 
 class TelegramConfig:
     TOKEN = os.getenv("API_TOKEN")
+    ADMIN_CHAT = os.getenv("ADMIN_CHAT")
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
     dp = Dispatcher(storage=RedisStorage(redis=RedisConfig().conn))
 

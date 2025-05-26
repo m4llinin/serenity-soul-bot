@@ -23,6 +23,7 @@ class User(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
+    partner_id: Mapped[int] = mapped_column(nullable=True)
     name: Mapped[str] = mapped_column(default="", nullable=True)
     communication_style: Mapped[CommunicationStyles] = mapped_column(
         default=CommunicationStyles.NEUTRAL.value,
@@ -40,5 +41,5 @@ class User(Base):
     )
     date_end_subscription: Mapped[datetime] = mapped_column(nullable=True)
     queries: Mapped[int] = mapped_column(default=20, nullable=False)
-    support_limit: Mapped[bool] = mapped_column(default=True, nullable=False)
-    language: Mapped[str] = mapped_column(default="ru", nullable=False)
+    last_support_message: Mapped[datetime] = mapped_column(nullable=True)
+    language: Mapped[str] = mapped_column(default="ru", nullable=True)

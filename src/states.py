@@ -12,3 +12,9 @@ class StartingStates(StatesGroup):
     get_feelings = State()
     get_voice = State()
     get_complex_describe = State()
+
+
+class SupportStates(StatesGroup):
+    get_improvement_message = State()
+    get_support_message = State()
+    get_support_reply = State()

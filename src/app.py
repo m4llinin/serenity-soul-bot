@@ -20,6 +20,7 @@ from src.api.routers import router as webhook_router
 from src.handlers.start import router as start_router
 from src.handlers.menu import router as menu_router
 from src.handlers.settings import router as settings_router
+from src.handlers.profile import router as profile_router
 
 
 async def _on_startup(bot: Bot) -> None:
@@ -48,6 +49,7 @@ def main() -> None:
     dp.include_router(start_router)
     dp.include_router(menu_router)
     dp.include_router(settings_router)
+    dp.include_router(profile_router)
 
     dp.update.middleware.register(LanguageMiddleware())
     dp.startup.register(_on_startup)

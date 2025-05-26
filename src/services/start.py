@@ -25,11 +25,27 @@ class StartService:
         self.texts = LoaderLexicon(language=self.language).load_messages()
         self.uow = UOW()
 
+    async def get_partner_id(self, message_text: str, user_id: int) -> int | None:
+        async with self.uow:
+            split_text = message_text.split(" ")
+            if len(split_text) == 2:
+                partner_id = int(split_text[1])
+                if partner_id != user_id:
+                    referral = await self.uow.users.get_one({"id": partner_id})
+                    if referral:
+                        return partner_id
+
     async def start_message(self, message: Message) -> None:
         async with self.uow:
             user = await self.uow.users.get_one({"id": message.chat.id})
             if user is None:
-                user = await self.uow.users.insert({"id": message.chat.id})
+                partner_id = await self.get_partner_id(message.text, message.chat.id)
+                user = await self.uow.users.insert(
+                    {
+                        "id": message.chat.id,
+                        "partner_id": partner_id,
+                    }
+                )
 
             await message.answer(text=self.texts["start"])
 

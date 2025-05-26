@@ -41,3 +41,15 @@ class InlineKeyboard:
             kb.append([InlineKeyboardButton(text=key, callback_data=callback_data)])
 
         return InlineKeyboardMarkup(inline_keyboard=kb)
+
+    def partner(self, user_id: int):
+        kb = [
+            [
+                InlineKeyboardButton(
+                    text=self.texts["share_link"],
+                    url=f"https://t.me/share/url?url=https://t.me/SerenitySoul_bot?start={user_id}",
+                )
+            ],
+            [InlineKeyboardButton(text=self.texts["back"], callback_data="my_profile")],
+        ]
+        return InlineKeyboardMarkup(inline_keyboard=kb)
