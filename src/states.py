@@ -11,3 +11,4 @@ class StartingStates(StatesGroup):
     get_urgent_voice = State()
     get_feelings = State()
     get_voice = State()
+    get_complex_describe = State()

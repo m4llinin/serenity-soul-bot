@@ -33,7 +33,6 @@ class InlineKeyboard:
         callback_datas: list[str],
     ) -> InlineKeyboardMarkup:
         kb = []
-        print(texts)
 
         if len(texts) != len(callback_datas):
             raise IndexError("length of keys is not equal to length of callback datas")

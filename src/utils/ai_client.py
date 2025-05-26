@@ -1,3 +1,5 @@
+import json
+
 from openai import (
     AsyncOpenAI,
     APIError,
@@ -6,7 +8,11 @@ from openai import (
     AuthenticationError,
 )
 
-from src.core.config import AIConfig
+from src.core.config import (
+    AIConfig,
+    RedisConfig,
+)
+from src.utils.load_lexicon import LoaderLexicon
 
 
 class DeepseekClient:
@@ -20,6 +26,7 @@ class DeepseekClient:
             base_url=base_url,
         )
         self.model = model
+        self.redis_client = RedisConfig().conn
 
     async def create_chat_completion(
         self,
@@ -54,3 +61,24 @@ class DeepseekClient:
             {"role": "user", "content": prompt},
         ]
         return await self.create_chat_completion(messages, **kwargs)
+
+    async def get_phrase_of_the_day(
+        self,
+        user_id: int,
+        prompt: str,
+        system_message: str,
+    ) -> str:
+        key = f"deepseek:phrase_of_the_day:{user_id}"
+        ttl = 24 * 60 * 60
+        cached_phrase = await self.redis_client.get(key)
+
+        if cached_phrase:
+            return json.loads(cached_phrase)["phrase"]
+
+        phrase = await self.ask(
+            prompt=prompt,
+            system_message=system_message,
+        )
+        await self.redis_client.setex(key, ttl, json.dumps({"phrase": phrase}))
+
+        return phrase

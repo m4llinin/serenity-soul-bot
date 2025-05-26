@@ -38,5 +38,7 @@ class User(Base):
         default=1,
         nullable=False,
     )
+    date_end_subscription: Mapped[datetime] = mapped_column(nullable=True)
     queries: Mapped[int] = mapped_column(default=20, nullable=False)
     support_limit: Mapped[bool] = mapped_column(default=True, nullable=False)
+    language: Mapped[str] = mapped_column(default="ru", nullable=False)

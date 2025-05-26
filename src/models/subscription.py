@@ -12,3 +12,4 @@ class Subscription(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
     name: Mapped[str]
     price: Mapped[float]
+    limit_queries: Mapped[int] = mapped_column(nullable=True)

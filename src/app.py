@@ -1,5 +1,6 @@
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.types import BotCommand
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 from aiohttp import web
 
@@ -13,8 +14,12 @@ from src.core.config import (
     TelegramConfig,
 )
 from src.utils.load_lexicon import LoaderLexicon
+from src.middlewares.language import LanguageMiddleware
+
 from src.api.routers import router as webhook_router
 from src.handlers.start import router as start_router
+from src.handlers.menu import router as menu_router
+from src.handlers.settings import router as settings_router
 
 
 async def _on_startup(bot: Bot) -> None:
@@ -25,6 +30,10 @@ async def _on_startup(bot: Bot) -> None:
         secret_token=WebhookConfig.SECRET,
         drop_pending_updates=True,
     )
+
+    commands = [BotCommand(command="start", description="Обо мне"),
+                BotCommand(command="menu", description="❕МЕНЮ❕")]
+    await bot.set_my_commands(commands=commands)
     # await bot.set_my_description(description=texts["description"])
     # await bot.set_my_short_description(short_description=texts["short_description"])
 
@@ -35,7 +44,12 @@ async def _on_shutdown(bot: Bot) -> None:
 
 def main() -> None:
     dp = Dispatcher()
+
     dp.include_router(start_router)
+    dp.include_router(menu_router)
+    dp.include_router(settings_router)
+
+    dp.update.middleware.register(LanguageMiddleware())
     dp.startup.register(_on_startup)
     dp.shutdown.register(_on_shutdown)
 

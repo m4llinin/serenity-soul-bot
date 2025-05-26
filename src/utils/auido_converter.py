@@ -1,5 +1,5 @@
 import os
-from pathlib import Path
+import json
 
 from aiogram import Bot
 from loguru import logger
@@ -22,7 +22,8 @@ class AudioConverter:
             self.r.adjust_for_ambient_noise(source)
 
         try:
-            return self.r.recognize_vosk(audio_data, language="ru")["text"]
+            text = self.r.recognize_vosk(audio_data, language="ru")
+            return json.loads(text)["text"]
         except sr.UnknownValueError as e:
             raise ValueError(f"Не удалось распознать речь: {e}")
         except sr.RequestError as e:

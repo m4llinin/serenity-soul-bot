@@ -37,7 +37,7 @@ class StartService:
                 await asyncio.sleep(0.5)
                 await message.answer(
                     text=self.texts["start_question_1"],
-                    reply_markup=InlineKeyboard().keyboard_column(
+                    reply_markup=InlineKeyboard(self.language).keyboard_column(
                         keys=["enter_name", "you", "neutral_name"],
                         callback_datas=["enter_name", "you", "neutral_name"],
                     ),
@@ -57,7 +57,7 @@ class StartService:
         if callback.data == "enter_name":
             await state.set_state(StartingStates.get_name)
             await callback.message.edit_reply_markup(
-                reply_markup=InlineKeyboard().keyboard_column(
+                reply_markup=InlineKeyboard(self.language).keyboard_column(
                     keys=["entering"],
                     callback_datas=["None"],
                 ),
@@ -75,7 +75,7 @@ class StartService:
 
         await callback.message.edit_text(
             text=self.texts["start_question_2"],
-            reply_markup=InlineKeyboard().keyboard_column(
+            reply_markup=InlineKeyboard(self.language).keyboard_column(
                 keys=[
                     "calm_down",
                     "sort_relationship",
@@ -103,7 +103,7 @@ class StartService:
         await state.set_state(None)
         await message.answer(
             text=self.texts["start_question_2"],
-            reply_markup=InlineKeyboard().keyboard_column(
+            reply_markup=InlineKeyboard(self.language).keyboard_column(
                 keys=[
                     "calm_down",
                     "sort_relationship",
@@ -129,7 +129,7 @@ class StartService:
         if callback.data == "urgent":
             await state.set_state(StartingStates.get_urgent_voice)
             await callback.message.edit_reply_markup(
-                reply_markup=InlineKeyboard().keyboard_column(
+                reply_markup=InlineKeyboard(self.language).keyboard_column(
                     keys=["send_audio"],
                     callback_datas=["None"],
                 ),
@@ -155,16 +155,17 @@ class StartService:
         await state.set_state(StartingStates.get_feelings)
         await callback.message.edit_text(
             text=self.texts["start_question_3"],
-            reply_markup=InlineKeyboard().keyboard_column_with_texts(
+            reply_markup=InlineKeyboard(self.language).keyboard_column_with_texts(
                 texts=updated_feelings + [buttons["complex_describe"]],
                 callback_datas=updated_feelings + ["complex_describe"],
             ),
         )
 
-    async def get_voice_message_urgent(
+    async def from_start_question_to_just_talk(
         self,
         message: Message,
         state: FSMContext,
+        prompt_key: str,
     ) -> None:
         msg = await message.answer(text=self.texts["wait_answer"])
 
@@ -178,8 +179,7 @@ class StartService:
 
         prompts = LoaderLexicon(self.language).load_prompts()
         client = DeepseekClient()
-        answer = await client.ask(prompts["get_urgent_answer"].format(situation=text))
-
+        answer = await client.ask(prompts[prompt_key].format(situation=text))
         await state.set_state(JustTalking)
         await msg.edit_text(text=answer, parse_mode=ParseMode.MARKDOWN)
 
@@ -189,12 +189,20 @@ class StartService:
         state: FSMContext,
     ) -> None:
         if callback.data == "complex_describe":
+            await state.set_state(StartingStates.get_complex_describe)
+            await callback.message.edit_text(
+                text=self.texts["complex_describe"],
+                reply_markup=InlineKeyboard(self.language).keyboard_column(
+                    keys=["send_audio"],
+                    callback_datas=["None"],
+                ),
+            )
             return
 
         await state.set_state(None)
         await callback.message.edit_text(
             text=self.texts["start_question_4"],
-            reply_markup=InlineKeyboard().keyboard_column(
+            reply_markup=InlineKeyboard(self.language).keyboard_column(
                 keys=[
                     "practice_methods",
                     "analyze_situation",
