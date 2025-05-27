@@ -28,9 +28,9 @@ jobs:
           context: .
           push: true
           file: docker/app.dockerfile
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:buildcache,mode=max
+          tags: ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:buildcache,mode=max
 
       - name: Create .env file
         run: |
@@ -64,8 +64,8 @@ jobs:
           SSH_PASS: ${{ secrets.SERVER_PASSWORD }}
         run: |
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cd ~/bot && \
-          docker pull ${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:latest && \
-          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:latest python -m alembic upgrade head"
+          docker pull ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest && \
+          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest python -m alembic upgrade head"
 
       - name: Deploy with docker-compose
         env:
