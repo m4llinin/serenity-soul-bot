@@ -27,6 +27,7 @@ jobs:
         with:
           context: .
           push: true
+          file: docker/app.dockerfile
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:latest
           cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:buildcache
           cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/${{ github.REPOSITORY }}-image:buildcache,mode=max
