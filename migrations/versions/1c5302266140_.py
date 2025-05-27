@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 403f690b50d1
+Revision ID: 1c5302266140
 Revises: 
-Create Date: 2025-05-24 20:17:50.638213
+Create Date: 2025-05-28 02:44:36.128240
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '403f690b50d1'
+revision: str = '1c5302266140'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -25,19 +25,23 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), autoincrement=False, nullable=False),
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
+    sa.Column('limit_queries', sa.Integer(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('partner_id', sa.Integer(), nullable=True),
     sa.Column('name', sa.String(), nullable=True),
     sa.Column('communication_style', sa.Enum('FRIEND', 'TEACHER', 'NEUTRAL', name='communicationstyles'), nullable=False),
     sa.Column('is_first_start', sa.Boolean(), nullable=False),
     sa.Column('last_activity', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('subscription', sa.Integer(), nullable=False),
+    sa.Column('date_end_subscription', sa.DateTime(), nullable=True),
     sa.Column('queries', sa.Integer(), nullable=False),
-    sa.Column('support_limit', sa.Boolean(), nullable=False),
+    sa.Column('last_support_message', sa.DateTime(), nullable=True),
+    sa.Column('language', sa.String(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.Column('updated_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
     sa.ForeignKeyConstraint(['subscription'], ['subscriptions.id'], ),

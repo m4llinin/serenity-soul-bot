@@ -1,9 +1,9 @@
 {
   "messages": {
-    "start": "Hello!\n\nI am your guide in the world of emotions, your personal psychologist. You can call me Serenity (but that's not necessary\uD83D\uDE0A).\nWhy me?\n\nI'm not an AI from a textbook. My advice comes from thousands of real dialogues where people, just like you, were looking for a way out.\n\nI don't give universal answers. Each of my recommendations is like an individual recipe created for your situation.\n\nI won't disappear when things get tough. Even at 3 AM, I'll help you find support.\n\nP.S. You can:\n\nCry.\n\nShout.\n\nStay silent.\n\nI'll accept it without questions and help turn it into strength.",
+    "start": "Hello!\n\nI am your guide in the world of emotions, your personal psychologist. You can call me Serenity (but that's not necessary\uD83D\uDE0A).\nWhy me?\n\nI'm not an AI from a textbook. My advice comes from thousands of real dialogues where people, just like you, were looking for a way out.\n\nI don't give universal answers. Each of my pieces of advice is like an individual recipe created for your situation.\n\nI won't disappear when things get tough. Even at 3 AM, I'll help you find support.\n\nP.S. You can:\n\nCry.\n\nShout.\n\nStay silent.\n\nI'll accept it without questions and help turn it into strength.",
     "description": "You've just found a safe and best-in-class AI with empathy skills. Here, it's never 'too late,' 'wrong,' or 'strange.'\n\nWhy me?\n\uD83D\uDC49 I understand with half a word — even if you're not ready to speak openly.\n\uD83D\uDC49 I work 24/7 — panic at 3 AM or joy at noon, I'm here.\n\uD83D\uDC49 I don't give templates — only solutions woven from your unique emotions.\n\uD83D\uDC49 I can read emotions from your voice messages, analyze conversations with your loved one, and much more\uD83E\uDD17\n\nPress \"Start\" — and let's make your inner world a little brighter.\n\nP.S. You can be yourself. Always.",
     "short_description": "AI-psychologist for the soul. Solving problems in 5 minutes. Confidential. Without judgment. Only effective steps. Start a dialogue — and your mind will say \"thank you\".",
-    "wait_answer": "Let me think about how to help you...",
+    "wait_answer": "Thinking about how to help you...",
     "start_question_1": "How would you prefer me to address you?\n\nYou can choose a name or even create a pseudonym — this will make our dialogue warmer",
     "start_question_2": "I'm here to help you find support in any situation. Can you tell me what brought you to me today? \uD83D\uDCAD",
     "start_question_3": "Let's start small. How would you describe the situation in one word? For example: misunderstanding, jealousy, longing...",
@@ -15,7 +15,18 @@
     "loading": "Loading...",
     "settings": "⚙\uFE0F In this section you can change settings:",
     "get_chosen": "You have chosen: \"{model}\"",
-    "choose_model": "Choose a model:"
+    "choose_model": "Choose a model:",
+    "partner": "\uD83E\uDD1D Invited: {count_partners} person(s)\n\uD83E\uDDFE Subscriptions purchased: {count_subscriptions}\n\nPartner program - allows you to use all bot functions absolutely free, just bring in 5 friends who will subscribe to any of the existing plans",
+    "improvement": "Please write what you think could be improved in our service or, conversely, what bothers you. We read every message \uD83D\uDE4F",
+    "error_not_time_improvement": "ERROR: You can submit an improvement suggestion once every 24 hours",
+    "get_improvement_message": "Thank you! We will definitely consider your suggestion",
+    "new_improvement": "❗\uFE0F<b>NEW IMPROVEMENT SUGGESTION</b>❗\uFE0F",
+    "support": "Tell us what happened in a text or voice message\n\nOur support will help as soon as possible",
+    "new_support": "❗\uFE0F<b>NEW MESSAGE IN TECHNICAL SUPPORT</b>❗\uFE0F",
+    "get_support_message": "An administrator will help as soon as possible!",
+    "support_reply": "❗\uFE0F<b>REPLY FROM TECHNICAL SUPPORT</b>❗\uFE0F\n\n{reply}",
+    "my_chats": "\uD83D\uDDC2 The chat menu allows you to:\n\n• Switch between chats\n• Create new chats\n• Change chat settings and names\n• View message history in a chat\n\nList of actions:",
+    "message_create_chat": "Write a chat topic (for example, relationships, career, fears)"
   },
   "keyboard": {
     "back": "< Back",
@@ -24,8 +35,8 @@
     "neutral_name": "Let it be a surprise",
     "entering": "Type...",
     "calm_down": "I need to calm down (anxiety, sadness, panic)",
-    "sort_relationship": "I want to figure out relationships (arguments, misunderstandings, loneliness)",
-    "inside_myself": "Looking for answers within myself (goals, fears, doubts)",
+    "sort_relationship": "I want to sort out my relationships (arguments, misunderstandings, loneliness)",
+    "inside_myself": "I'm looking for answers within myself (goals, fears, doubts)",
     "urgent": "This is urgent... (crisis, loss, despair)",
     "want_talk": "I just want to talk",
     "send_audio": "Record a voice message...",
@@ -46,7 +57,7 @@
     "partners": "Partner program",
     "model": "Choose model",
     "buy_subscription": "Buy Premium",
-    "support": "Technical Support",
+    "support": "Tech Support",
     "improvement": "Suggestion for improvement",
     "communication_style": "Choose communication style",
     "language": "Interface language",
@@ -54,10 +65,18 @@
     "short": "Short factual answers",
     "pretty": "Tenderness in every word",
     "strict": "Strictness",
-    "light": "Lightness, as if a wise child is answering you",
+    "light": "Lightness, as if a wise child is responding to you",
     "friend": "Friend",
     "teacher": "Mentor",
-    "neutral": "Neutral"
+    "neutral": "Neutral",
+    "share_link": "Share link",
+    "write": "Write",
+    "writing": "You can write...",
+    "reply": "Reply",
+    "create_chat": "New chat",
+    "find_message": "Search",
+    "export_dialog": "Export",
+    "your_chats": "Chat selection"
   },
   "names": [
     "Sunshine",
@@ -76,12 +95,12 @@
     "Creator"
   ],
   "prompts": {
-    "get_question_on_theme": "You are an empathetic and attentive personal psychologist who helps clients through exploring their inner world.\nCreate one deep question for self-reflection on the topic: {theme}.\nRequirements for the question:\n\nOpen format (Yes/No answers are not allowed)\n\nStimulates analysis of feelings and motives\n\nContains elements of empathetic formulation\n\nHelps explore the roots of the problem\n\nFollows the principles of cognitive behavioral therapy\n\nExample for the topic \"Fear of failure\":\n\"When you postponed an important task at the last moment, what hidden thoughts\nabout yourself flashed through your mind before making this decision?\"\nIn your answer, provide only the question",
+    "get_question_on_theme": "You are an empathetic and attentive personal psychologist who helps clients through exploring their inner world.\nCreate one deep question for self-reflection on the topic: {theme}.\nRequirements for the question:\n\nOpen format (Yes/No answers are not allowed)\n\nStimulates analysis of feelings and motives\n\nContains elements of empathetic formulation\n\nHelps explore the roots of the problem\n\nAligns with the principles of cognitive-behavioral therapy\n\nExample for the topic \"Fear of failure\":\n\"When you postponed an important task at the last moment, what hidden thoughts\nabout yourself flashed through your mind before making that decision?\"\nIn your answer, provide only the question",
     "get_feeling_on_theme": "You are an empathetic and attentive personal psychologist specializing in emotional intelligence.\nIdentify 5 key feelings that a person may experience in the context of: {theme}.\nRequirements for the answer:\n\nFeeling name according to the Ekman-Plutchik emotional classification standard\n\nFormulations in the format: \"Feeling\" and only a list of emotions without numbering, each on a new line and without explanations\n\nExample for the topic \"Conflict at work\":\nDisappointment\nAnxiety\nAnger\nHelplessness\nShame",
     "get_urgent_question": "You are an empathetic and attentive personal psychologist working in the technique of phenomenological interviewing.\nCreate one therapeutic question to explore the client's emotional state.\n\nParameters:\n1. Format: open question without answer options\n2. Focus: current feelings \"here and now\"\n3. Mechanics: connection of bodily sensations with emotions\n4. Goal: identifying suppressed experiences\n5. Style: empathetic, non-judgmental language\n\nTechnical requirements:\n- Use a metaphor to access emotions\n- Include a sensory anchor (body/breath/image)\n- Move away from rationalization to direct experience\n- Leave space for uncertainty\n\nExample work:\n❯ Topic: \"Conflict with a colleague\"\n◈ \"If you imagine that your breath is a conductor to emotions, what feeling would appear most vividly when you remember that conversation?\"\n\nIn your answer, provide only the question",
-    "get_urgent_answer": "Imagine that you are an empathetic and attentive personal psychologist who helps users analyze their emotions in the context of described situations. Your task is to support and conduct a connected analysis of emotions based on the information received.\n\nSituation: {situation}\n\nIdentify key emotions (anger, fear, sadness, joy, etc.) and their intensity. What events/words/actions provoked these emotions? Explain how emotions are connected to the user's needs (for example, anger may signal a violation of boundaries, sadness — a loss). At the end, add a call for further dialogue\n\nImportant:\nMaintain an empathetic but professional tone.\nAvoid diagnoses and clinical terms.\nEmphasize that emotions are natural, and accepting them is the key to solving problems.\nExample response to a user's situation:\nUser: \"My friend didn't invite me to a party, and I feel unwanted\".\nYour answer: \"It seems you're experiencing feelings of resentment and loneliness. This could have arisen from a need for acceptance and fear of being excluded. Perhaps your friend didn't realize how this would affect you.\"\n\nIn your answer, provide only the analysis in connected text",
+    "get_urgent_answer": "Imagine that you are an empathetic and attentive personal psychologist who helps users analyze their emotions in the context of described situations. Your task is to support and conduct a connected analysis of emotions based on the information received.\n\nSituation: {situation}\n\nIdentify key emotions (anger, fear, sadness, joy, etc.) and their intensity. What events/words/actions provoked these emotions? Explain how emotions are connected to the user's needs (for example, anger may signal a violation of boundaries, sadness — a loss). At the end, add a call for further dialogue\n\nImportant:\nMaintain an empathetic but professional tone.\nAvoid diagnoses and clinical terms.\nEmphasize that emotions are natural, and accepting them is the key to solving problems.\nExample response to a user's situation:\nUser: \"My friend didn't invite me to a party, and I feel unwanted\".\nYour answer: \"It seems you're facing feelings of hurt and loneliness. This could have arisen from a need for acceptance and fear of being excluded. Perhaps your friend wasn't aware of how this would affect you.\"\n\nIn your answer, provide only the analysis in connected text",
     "get_complex_describe": "Situation: {situation}\n\nImagine that you are an empathetic and attentive personal psychologist. Your task is to help the user analyze their situation by asking two short clarifying questions that will help to understand the context and their emotions more deeply. The questions should be open, non-intrusive, and focused on:\n\nIdentifying the key emotion (for example: \"What feeling is currently predominant in this situation: anxiety, helplessness, irritation, or something else?\").\nAttempts to solve the problem (for example: \"What have you already tried to do to cope with this? Or maybe you're not sure where to start yet?\"). Keep the tone friendly, avoid template phrases.\n\nMake your answer as realistic as possible to look like a live dialogue",
-    "system_phrase_day": "You are an empathetic and attentive personal psychologist. Your task is to create one short, motivational phrase of the day that will be useful and inspiring for the user. The phrase should be brief (no more than 100 characters) but deep in meaning.",
+    "system_phrase_day": "You are an empathetic and attentive personal psychologist. Your task is to create one short, motivational phrase of the day that will be useful and inspiring for the user. The phrase should be brief (no more than 100 characters), but deep in meaning.",
     "user_phrase_day": "Create a phrase of the day for today. Answer only with the phrase, without additional text."
   }
 }
