@@ -4,10 +4,7 @@ from fastapi import (
 )
 from aiogram.types import Update
 
-from src.core.config import (
-    TelegramConfig,
-    WebhookConfig,
-)
+from src.core.config import WebhookConfig
 
 router = APIRouter()
 
@@ -17,11 +14,12 @@ async def bot_webhook(request: Request):
     if request.headers.get("X-Telegram-Bot-Api-Secret-Token") != WebhookConfig.SECRET:
         return {"status": "forbidden"}
 
-    update = Update.model_validate(
-        await request.json(),
-        context={"bot": TelegramConfig.bot},
-    )
-    await TelegramConfig.dp.feed_update(update)
+    bot = request.app.state.bot
+    dp = request.app.state.dp
+
+    update = Update.model_validate(await request.json())
+    await dp.feed_update(bot=bot, update=update)
+
     return {"status": "ok"}
 
 

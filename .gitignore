@@ -199,4 +199,4 @@ cython_debug/
 .idea/
 
 docker-compose.dev.yml
-database.db
+data/database.db

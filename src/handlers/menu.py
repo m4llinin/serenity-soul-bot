@@ -12,6 +12,7 @@ from aiogram.types import (
 from src.services.menu import MenuService
 from src.services.profile import ProfileService
 from src.services.settings import SettingsService
+from src.services.chat import ChatService
 
 router = Router()
 
@@ -34,3 +35,8 @@ async def my_profile(callback: CallbackQuery, language: str):
 @router.callback_query(F.data == "settings")
 async def settings(callback: CallbackQuery, language: str):
     await SettingsService(language).settings_menu(callback)
+
+
+@router.callback_query(F.data == "my_chats")
+async def chat(callback: CallbackQuery, language: str):
+    await ChatService(language).my_chats(callback)

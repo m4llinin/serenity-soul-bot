@@ -13,7 +13,7 @@ from src.keyboards.inline import InlineKeyboard
 from src.utils.uow import UOW
 from src.states import (
     StartingStates,
-    JustTalking,
+    ChatStates,
 )
 from src.utils.ai_client import DeepseekClient
 from src.utils.auido_converter import AudioConverter
@@ -196,7 +196,7 @@ class StartService:
         prompts = LoaderLexicon(self.language).load_prompts()
         client = DeepseekClient()
         answer = await client.ask(prompts[prompt_key].format(situation=text))
-        await state.set_state(JustTalking)
+        await state.set_state(ChatStates.waiting_for_message)
         await msg.edit_text(text=answer, parse_mode=ParseMode.MARKDOWN)
 
     async def get_answer_on_start_question_3(

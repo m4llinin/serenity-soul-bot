@@ -3,7 +3,7 @@ from asyncj import SyncJson
 
 
 class LoaderLexicon:
-    BASE_PATH = "../src/lexicon"
+    BASE_PATH = "./lexicon"
 
     def __init__(self, language: str = "ru") -> None:
         self.language = language.lower()

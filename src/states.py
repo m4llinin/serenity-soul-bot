@@ -3,8 +3,6 @@ from aiogram.fsm.state import (
     State,
 )
 
-JustTalking = State()
-
 
 class StartingStates(StatesGroup):
     get_name = State()
@@ -18,3 +16,8 @@ class SupportStates(StatesGroup):
     get_improvement_message = State()
     get_support_message = State()
     get_support_reply = State()
+
+
+class ChatStates(StatesGroup):
+    waiting_for_message = State()
+    waiting_for_chat_name = State()

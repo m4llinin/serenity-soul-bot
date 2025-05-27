@@ -35,7 +35,7 @@ class DBConfig:
     def URL(self, migrations: bool = False) -> str:
         if migrations:
             return f"sqlite:///{self.PATH}"
-        return f"sqlite+aiosqlite:///../{self.PATH}"
+        return f"sqlite+aiosqlite:///{self.PATH}"
 
 
 class WebhookConfig:
@@ -43,12 +43,14 @@ class WebhookConfig:
     PATH: str = os.getenv("WEBHOOK_PATH")
     SECRET: str = os.getenv("WEBHOOK_SECRET")
 
+    @property
+    def URL(self) -> str:
+        return f"{self.BASE_URL}{self.PATH}"
+
 
 class TelegramConfig:
     TOKEN = os.getenv("API_TOKEN")
     ADMIN_CHAT = os.getenv("ADMIN_CHAT")
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode="HTML"))
-    dp = Dispatcher(storage=RedisStorage(redis=RedisConfig().conn))
 
 
 class AIConfig:

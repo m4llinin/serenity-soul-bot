@@ -1,0 +1,40 @@
+services:
+  bot:
+    image: serenity-soul-bot-image:latest
+    container_name: serenity-soul-bot-container
+    command: [ "fastapi", "run", "src/main.py", "--host", "0.0.0.0", "--port", "8080" ]
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    networks:
+      - bot-network
+    depends_on:
+      - redis
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    volumes:
+      - ./redis_data:/data
+    ports:
+      - "6378:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - bot-network
+
+volumes:
+  redis_data:
+  data:
+
+networks:
+  bot-network:
+    driver: bridge

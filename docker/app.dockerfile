@@ -1,4 +1,13 @@
-FROM ubuntu:latest
-LABEL authors="yaroslavmalinin"
+FROM python:3.12
 
-ENTRYPOINT ["top", "-b"]
+WORKDIR /app
+
+COPY ../requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get -y install ffmpeg
+
+COPY ../ .
+
+EXPOSE 8080

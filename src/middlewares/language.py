@@ -1,4 +1,12 @@
-from typing import Callable, Any, Awaitable
+from datetime import (
+    datetime,
+    UTC,
+)
+from typing import (
+    Callable,
+    Any,
+    Awaitable,
+)
 
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.middlewares.user_context import EventContext
@@ -23,9 +31,14 @@ class LanguageMiddleware(BaseMiddleware):
             async with self.uow:
                 user = await self.uow.users.get_one({"id": user_id})
 
-                if not user:
-                    data["language"] = "ru"
-                else:
+                if user:
                     data["language"] = user.language
+                    await self.uow.users.update(
+                        filters={"id": user_id},
+                        data={"last_activity": datetime.now(tz=UTC)},
+                    )
+                    await self.uow.commit()
+                else:
+                    data["language"] = "ru"
 
         return await handler(event, data)

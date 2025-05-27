@@ -12,10 +12,11 @@ from src.core.config import (
     AIConfig,
     RedisConfig,
 )
-from src.utils.load_lexicon import LoaderLexicon
+from src.models.chat import Message
 
 
 class DeepseekClient:
+
     def __init__(
         self,
         model: str = "deepseek/deepseek-chat-v3-0324:free",
@@ -27,6 +28,23 @@ class DeepseekClient:
         )
         self.model = model
         self.redis_client = RedisConfig().conn
+
+    @staticmethod
+    def _format_messages_for_ai(
+        messages: list[Message],
+        system_message: str,
+    ) -> list[dict[str, str]]:
+        formatted_messages = [{"role": "system", "content": system_message}]
+
+        for message in messages:
+            formatted_messages.append(
+                {
+                    "role": message.role,
+                    "content": message.content,
+                }
+            )
+
+        return formatted_messages
 
     async def create_chat_completion(
         self,
@@ -61,6 +79,20 @@ class DeepseekClient:
             {"role": "user", "content": prompt},
         ]
         return await self.create_chat_completion(messages, **kwargs)
+
+    async def generate_response_from_history_messages(
+        self,
+        messages: list[Message],
+        system_message: str = "You are a personal psychologist",
+        **kwargs,
+    ) -> str:
+        formatted_messages = self._format_messages_for_ai(messages, system_message)
+
+        response = await self.create_chat_completion(
+            messages=formatted_messages,
+            **kwargs,
+        )
+        return response
 
     async def get_phrase_of_the_day(
         self,
