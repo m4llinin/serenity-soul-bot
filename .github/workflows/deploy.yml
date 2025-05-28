@@ -72,6 +72,7 @@ jobs:
         run: |
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cd ~/bot && \
           docker pull ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest && \
+          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest mkdir -p data && \
           docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest python -m alembic upgrade head"
 
       - name: Insert 3 subscriptions
