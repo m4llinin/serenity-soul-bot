@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -59,15 +59,29 @@ jobs:
         run: |
           sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no -r docker-compose.yml .env ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:~/bot/
 
+  migrations:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Run migrations
         env:
           SSH_PASS: ${{ secrets.SERVER_PASSWORD }}
         run: |
           sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cd ~/bot && \
           docker pull ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest && \
-          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest python -m alembic upgrade head \
-          && pwd && ls -l"
+          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest python -m alembic upgrade head"
 
+      - name: Insert 3 subscriptions
+        env:
+          SSH_PASS: ${{ secrets.SERVER_PASSWORD }}
+        run: |
+          sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "cd ~/bot && \
+          docker run --rm --env-file .env ${{ secrets.DOCKER_USERNAME }}/serenity-soul-bot-image:latest /app/init_db.sh"
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Deploy with docker-compose
         env:
           SSH_PASS: ${{ secrets.SERVER_PASSWORD }}
