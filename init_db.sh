@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DB_PATH="data/database.db"
+DB_PATH="./data/database.db"
 
 if ! command -v sqlite3 &> /dev/null; then
     echo "Error: sqlite3 is not installed. Please install it first."
