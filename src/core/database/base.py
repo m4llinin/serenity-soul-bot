@@ -94,7 +94,7 @@ class SqlAlchemyRepository(RepositoryABC):
             model=self._model.__tablename__,
             params=filters,
         )
-        stmt = select(self._model).filter_by(**filters)
+        stmt = select(self._model).filter_by(**filters).order_by(self._model.created_at)
         res = await self._session.execute(stmt)
         return [r[0] for r in res.all()]
 

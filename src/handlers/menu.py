@@ -3,6 +3,7 @@ from aiogram import (
     F,
 )
 from aiogram.filters import Command
+from aiogram.fsm.context import FSMContext
 
 from aiogram.types import (
     Message,
@@ -13,30 +14,23 @@ from src.services.menu import MenuService
 from src.services.profile import ProfileService
 from src.services.settings import SettingsService
 from src.services.chat import ChatService
+from src.utils.load_lexicon import LoaderLexicon
 
 router = Router()
 
-
-@router.message(Command("menu"))
-async def menu(message: Message, language: str):
-    await MenuService(language).main_menu(message)
+buttons = LoaderLexicon("ru").load_keyboard()
 
 
-@router.callback_query(F.data == "menu")
-async def menu(callback: CallbackQuery, language: str):
-    await MenuService(language).main_menu_from_callback(callback)
+@router.message(F.text == buttons["my_profile"])
+async def my_profile(message: Message, state: FSMContext, language: str):
+    await ProfileService(language).profile(message, state)
 
 
-@router.callback_query(F.data == "my_profile")
-async def my_profile(callback: CallbackQuery, language: str):
-    await ProfileService(language).profile(callback)
+@router.message(F.text == buttons["settings"])
+async def settings(message: Message, state: FSMContext, language: str):
+    await SettingsService(language).settings_menu(message, state)
 
 
-@router.callback_query(F.data == "settings")
-async def settings(callback: CallbackQuery, language: str):
-    await SettingsService(language).settings_menu(callback)
-
-
-@router.callback_query(F.data == "my_chats")
-async def chat(callback: CallbackQuery, language: str):
-    await ChatService(language).my_chats(callback)
+@router.message(F.text == buttons["my_chats"])
+async def chat(message: Message, state: FSMContext, language: str):
+    await ChatService(language).my_chats(message, state)

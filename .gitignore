@@ -200,3 +200,4 @@ cython_debug/
 
 docker-compose.dev.yml
 data/database.db
+bot/

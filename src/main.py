@@ -1,15 +1,10 @@
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.redis import RedisStorage
-from fastapi import (
-    FastAPI,
-    Request,
-    Response,
-)
+from fastapi import FastAPI
 from aiogram import (
     Bot,
     Dispatcher,
 )
-from aiogram.types import Update
 from contextlib import asynccontextmanager
 
 from src.core.config import (
@@ -30,11 +25,11 @@ from src.middlewares.language import LanguageMiddleware
 def setup_dispatcher():
     dp = Dispatcher(storage=RedisStorage(redis=RedisConfig().conn))
 
-    dp.include_router(start_router)
     dp.include_router(menu_router)
     dp.include_router(settings_router)
     dp.include_router(profile_router)
     dp.include_router(chat_router)
+    dp.include_router(start_router)
 
     dp.update.middleware.register(LanguageMiddleware())
     return dp
@@ -63,5 +58,4 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
 app.include_router(api_router)

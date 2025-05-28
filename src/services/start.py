@@ -9,6 +9,7 @@ from aiogram.types import (
 )
 
 from src.utils.load_lexicon import LoaderLexicon
+from src.keyboards.reply import ReplyKeyboard
 from src.keyboards.inline import InlineKeyboard
 from src.utils.uow import UOW
 from src.states import (
@@ -17,6 +18,7 @@ from src.states import (
 )
 from src.utils.ai_client import DeepseekClient
 from src.utils.auido_converter import AudioConverter
+from src.services.chat import ChatService
 
 
 class StartService:
@@ -35,7 +37,8 @@ class StartService:
                     if referral:
                         return partner_id
 
-    async def start_message(self, message: Message) -> None:
+    async def start_message(self, message: Message, state: FSMContext) -> None:
+        await state.set_state()
         async with self.uow:
             user = await self.uow.users.get_one({"id": message.chat.id})
             if user is None:
@@ -47,7 +50,10 @@ class StartService:
                     }
                 )
 
-            await message.answer(text=self.texts["start"])
+            await message.answer(
+                text=self.texts["start"],
+                reply_markup=ReplyKeyboard(self.language).main(),
+            )
 
             if user.is_first_start:
                 await asyncio.sleep(0.5)
@@ -70,6 +76,13 @@ class StartService:
         callback: CallbackQuery,
         state: FSMContext,
     ) -> None:
+        chat_service = ChatService()
+        chat_id = await chat_service.create_chat(
+            user_id=callback.message.chat.id,
+            chat_name="Стартовый",
+        )
+        await state.update_data(current_chat_id=chat_id)
+
         if callback.data == "enter_name":
             await state.set_state(StartingStates.get_name)
             await callback.message.edit_reply_markup(
@@ -142,6 +155,7 @@ class StartService:
         callback: CallbackQuery,
         state: FSMContext,
     ) -> None:
+
         if callback.data == "urgent":
             await state.set_state(StartingStates.get_urgent_voice)
             await callback.message.edit_reply_markup(
@@ -159,6 +173,10 @@ class StartService:
         prompts = loader.load_prompts()
         theme = buttons[callback.data]
 
+        chat_service = ChatService()
+        chat_id = await state.get_value("current_chat_id")
+        await chat_service.add_message(chat_id=chat_id, role="user", content=theme)
+
         client = DeepseekClient()
         feelings = await client.ask(prompts["get_feeling_on_theme"].format(theme=theme))
         updated_feelings = list(
@@ -166,6 +184,12 @@ class StartService:
                 lambda x: 0 < len(x) < 40,
                 [i.strip().replace("**", "") for i in feelings.split("\n")],
             )
+        )
+
+        await chat_service.add_message(
+            chat_id=chat_id,
+            role="system",
+            content=self.texts["start_question_3"],
         )
 
         await state.set_state(StartingStates.get_feelings)
@@ -193,9 +217,16 @@ class StartService:
         else:
             text = message.text
 
+        chat_service = ChatService()
+        chat_id = await state.get_value("current_chat_id")
+        await chat_service.add_message(chat_id=chat_id, role="user", content=text)
+
         prompts = LoaderLexicon(self.language).load_prompts()
         client = DeepseekClient()
         answer = await client.ask(prompts[prompt_key].format(situation=text))
+
+        await chat_service.add_message(chat_id=chat_id, role="system", content=answer)
+
         await state.set_state(ChatStates.waiting_for_message)
         await msg.edit_text(text=answer, parse_mode=ParseMode.MARKDOWN)
 
@@ -214,6 +245,12 @@ class StartService:
                 ),
             )
             return
+
+        chat_service = ChatService()
+        chat_id = await state.get_value("current_chat_id")
+        await chat_service.add_message(
+            chat_id=chat_id, role="user", content=callback.data
+        )
 
         await state.set_state(None)
         await callback.message.edit_text(
@@ -235,3 +272,64 @@ class StartService:
                 ],
             ),
         )
+
+    async def after_question_4(
+        self,
+        callback: CallbackQuery,
+        state: FSMContext,
+    ) -> None:
+        await callback.message.edit_text(text=self.texts["wait_answer"])
+
+        buttons = LoaderLexicon(self.language).load_keyboard()
+        action = buttons[callback.data]
+        chat_service = ChatService()
+        chat_id = await state.get_value("current_chat_id")
+
+        await chat_service.add_message(chat_id=chat_id, role="user", content=action)
+
+        client = DeepseekClient()
+
+        async with self.uow:
+            messages = await self.uow.messages.get_all({"chat_id": chat_id})
+            answer = await client.generate_response_from_history_messages(messages)
+
+            await chat_service.add_message(
+                chat_id=chat_id, role="system", content=answer
+            )
+
+            await state.set_state(ChatStates.waiting_for_message)
+            await callback.message.edit_text(
+                text=answer,
+                parse_mode=ParseMode.MARKDOWN,
+                reply_markup=InlineKeyboard(self.language).keyboard_column(
+                    keys=["can_continue_dialog"],
+                    callback_datas=["None"],
+                ),
+            )
+
+    async def just_talk(self, message: Message, state: FSMContext) -> None:
+        msg = await message.answer(text=self.texts["wait_answer"])
+
+        if message.voice:
+            text = await AudioConverter().get_text_from_voice(
+                bot=message.bot,
+                file_id=message.voice.file_id,
+            )
+        else:
+            text = message.text
+
+        client = DeepseekClient()
+        chat_service = ChatService()
+        chat_id = await state.get_value("current_chat_id")
+
+        await chat_service.add_message(chat_id=chat_id, role="user", content=text)
+
+        async with self.uow:
+            messages = await self.uow.messages.get_all({"chat_id": chat_id})
+            answer = await client.generate_response_from_history_messages(messages)
+
+            await chat_service.add_message(
+                chat_id=chat_id, role="system", content=answer
+            )
+
+            await msg.edit_text(text=answer, parse_mode=ParseMode.MARKDOWN)

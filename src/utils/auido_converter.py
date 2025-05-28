@@ -20,7 +20,6 @@ class AudioConverter:
         with sr.AudioFile(audio_file) as source:
             audio_data = self.r.record(source)
             self.r.adjust_for_ambient_noise(source)
-
         try:
             text = self.r.recognize_vosk(audio_data, language="ru")
             return json.loads(text)["text"]

@@ -9,6 +9,10 @@ from src.core.config import DBConfig
 from src.core.database.base import Base
 from src.models.user import User
 from src.models.subscription import Subscription
+from src.models.chat import (
+    Chat,
+    Message,
+)
 
 config = context.config
 

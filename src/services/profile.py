@@ -16,13 +16,14 @@ class ProfileService:
         self.texts = LoaderLexicon(language=self.language).load_messages()
         self.uow = UOW()
 
-    async def profile(self, callback: CallbackQuery) -> None:
+    async def profile(self, message: Message, state: FSMContext) -> None:
+        await state.set_state()
         async with self.uow:
-            await callback.message.edit_text(text=self.texts["loading"])
+            msg = await message.answer(text=self.texts["loading"])
 
-            user = await self.uow.users.get_one({"id": callback.message.chat.id})
+            user = await self.uow.users.get_one({"id": message.chat.id})
             if not user:
-                await callback.message.edit_text(
+                await msg.edit_text(
                     text=self.texts["error_not_found_user"]
                 )
 
@@ -37,7 +38,7 @@ class ProfileService:
 
             prompts = LoaderLexicon(self.language).load_prompts()
             client = DeepseekClient()
-            await callback.message.edit_text(
+            await msg.edit_text(
                 text=self.texts["my_profile"].format(
                     id=user.id,
                     subscription=subscription.name,
@@ -60,7 +61,6 @@ class ProfileService:
                         "subscription",
                         "support",
                         "improvement",
-                        "back",
                     ],
                     callback_datas=[
                         "my_condition",
@@ -70,7 +70,6 @@ class ProfileService:
                         "buy_subscription",
                         "support",
                         "improvement",
-                        "menu",
                     ],
                 ),
             )

@@ -1,4 +1,7 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+)
 from src.utils.load_lexicon import LoaderLexicon
 
 

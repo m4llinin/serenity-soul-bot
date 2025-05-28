@@ -1,4 +1,5 @@
-from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, Message
 
 from src.keyboards.inline import InlineKeyboard
 from src.utils.load_lexicon import LoaderLexicon
@@ -11,12 +12,13 @@ class SettingsService:
         self.texts = LoaderLexicon(language=self.language).load_messages()
         self.uow = UOW()
 
-    async def settings_menu(self, callback: CallbackQuery) -> None:
-        await callback.message.edit_text(
+    async def settings_menu(self, message: Message, state: FSMContext) -> None:
+        await state.set_state()
+        await message.answer(
             text=self.texts["settings"],
             reply_markup=InlineKeyboard(self.language).keyboard_column(
-                keys=["model", "communication_style", "language", "back"],
-                callback_datas=["model", "communication_style", "language", "menu"],
+                keys=["model", "communication_style", "language"],
+                callback_datas=["model", "communication_style", "language"],
             ),
         )
 

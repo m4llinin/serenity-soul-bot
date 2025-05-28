@@ -10,14 +10,14 @@ from aiogram.types import (
 )
 
 from src.services.start import StartService
-from src.states import StartingStates
+from src.states import StartingStates, ChatStates
 
 router = Router()
 
 
 @router.message(CommandStart())
-async def start_and_send_question_1(message: Message, language: str):
-    await StartService(language).start_message(message)
+async def start_and_send_question_1(message: Message, state: FSMContext, language: str):
+    await StartService(language).start_message(message, state)
 
 
 @router.callback_query(lambda x: x.data in ("enter_name", "you", "neutral_name"))
@@ -56,7 +56,8 @@ async def get_urgent_voice(message: Message, state: FSMContext, language: str):
 @router.callback_query(StartingStates.get_feelings)
 async def send_question_4(callback: CallbackQuery, state: FSMContext, language: str):
     await StartService(language).get_answer_on_start_question_3(
-        callback=callback, state=state
+        callback=callback,
+        state=state,
     )
 
 
@@ -67,3 +68,22 @@ async def get_complex_describe(message: Message, state: FSMContext, language: st
         state=state,
         prompt_key="get_complex_describe",
     )
+
+
+@router.callback_query(
+    lambda x: x.data
+    in (
+        "practice_methods",
+        "analyze_situation",
+        "history_other_peoples",
+        "advice",
+        "just_talking",
+    )
+)
+async def after_question_4(callback: CallbackQuery, state: FSMContext, language: str):
+    await StartService(language).after_question_4(callback=callback, state=state)
+
+
+@router.message(F.text | F.voice, ChatStates.waiting_for_message)
+async def just_chat(message: Message, state: FSMContext, language: str):
+    await StartService(language).just_talk(message=message, state=state)
