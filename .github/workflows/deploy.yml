@@ -7,6 +7,7 @@ on:
 
 jobs:
   build:
+    name: Build container with app
     runs-on: ubuntu-latest
 
     steps:
@@ -50,6 +51,12 @@ jobs:
           DEEPSEEK_TOKEN=${{ secrets.DEEPSEEK_TOKEN }}
           EOF
 
+  copy:
+    name: Copy files to server
+    runs-on: ubuntu-latest
+    needs: [ build ]
+
+    steps:
       - name: Install sshpass
         run: sudo apt-get install -y sshpass
 
@@ -62,7 +69,7 @@ jobs:
   migrations:
     name: Run Database Migrations
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [ copy ]
 
     steps:
       - name: Run migrations
